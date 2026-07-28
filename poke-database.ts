@@ -26,7 +26,7 @@ export interface PokemonStruct {
   id: number;
 }
 
-app.get("/pokemon/:name", async (req, res) => {
+/*app.get("/pokemon/:name", async (req, res) => {
     const name = req.params.name;
 
     try {
@@ -60,4 +60,23 @@ app.get("/pokemon/:name", async (req, res) => {
             return res.status(502).json({ error: "upstream service unavailable" })
     }
 
-});
+});*/
+
+app.get("/team", async (req, res) => {
+    try{
+        const team = await Promise.all([
+            fetchPokemon("pikachu"),
+            fetchPokemon("charizard"),
+            fetchPokemon("bulbasaur")
+        ]);
+
+        if ( team.some(x => x === null) ){
+            return res.status(404).json({ error: "One or more pokemon not found"});
+        }
+
+        res.json(team);
+    }catch (err) {
+        console.error(err);
+        return res.status(502).json({ error: " unavailable service. "})
+    }
+})
