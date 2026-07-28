@@ -28,10 +28,8 @@ interface PokemonResponse {
 app.get("/pokemon/:name", async (req, res) => {
     const name = req.params.name;
 
-/*    if (!/^[a-z-]+$/i.test(name)) {
-        return res.status(400).json({ error: "name required"});
-    }*/
-
+    try {
+    //const response = await fetch(`https://pokeapi.invalid/`);
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
 
     if (!response.ok){ // ok is status 200~299.
@@ -42,4 +40,8 @@ app.get("/pokemon/:name", async (req, res) => {
 
 
     res.json({ name: data.name, id: data.id }); //once
+    } catch (err) {
+        console.error(err);
+        return res.status(502).json({ error: "upstream service unavailable" }) // bad gateway
+    }
 })
