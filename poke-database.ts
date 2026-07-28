@@ -13,5 +13,22 @@ app.listen(PORT, () => console.log(`listening on ${PORT}`)); // starts the serve
 
 app.get("/health", (req, res) => {
     res.json({ status: "ok"});
+    test();
 });
 
+function test() {
+    console.log("WORKED");
+}
+
+app.get("/pokemon/:name", async (req, res) => {
+    const name = req.params.name;
+
+    if (!/^[a-z-]+$/i.test(name)) {
+        return res.status(400).json({ error: "name required"});
+    }
+
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    const data = await response.json();
+
+    res.json({ name: data.name, id: data.id });
+})
