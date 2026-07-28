@@ -29,7 +29,7 @@ app.get("/pokemon/:name", async (req, res) => {
     const name = req.params.name;
 
     try {
-    //const response = await fetch(`https://pokeapi.invalid/`);
+    //const response = await fetch(`https://pokeapi.invalid/`);//
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
 
     if (!response.ok){ // ok is status 200~299.
