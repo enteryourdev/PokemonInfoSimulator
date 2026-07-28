@@ -1,4 +1,5 @@
 import express from "express";
+import { fetchPokemon, Pokemon } from "./pokemon";
 
 const app = express();
 const PORT = 3000; //listen port
@@ -20,7 +21,7 @@ function test() {
     console.log("WORKED");
 }
 
-interface PokemonResponse {
+export interface PokemonStruct {
   name: string;
   id: number;
 }
@@ -36,7 +37,7 @@ app.get("/pokemon/:name", async (req, res) => {
         return res.status(404).json({ error: "pokemon not found"});
     }
 
-    const data = await response.json() as PokemonResponse;
+    const data = await response.json() as PokemonStruct;
 
 
     res.json({ name: data.name, id: data.id }); //once
@@ -45,3 +46,18 @@ app.get("/pokemon/:name", async (req, res) => {
         return res.status(502).json({ error: "upstream service unavailable" }) // bad gateway
     }
 })
+
+app.get("/pokemon/:name", async (req, res) => {
+    try {
+        const response = await fetchPokemon(req.params.name);
+
+        if (response === null){
+            return res.status(404).json({ error: "Pokemon not found"});
+        }
+        res.json(response);
+    }catch (err){
+            console.error(err);
+            return res.status(502).json({ error: "upstream service unavailable" })
+    }
+
+});
