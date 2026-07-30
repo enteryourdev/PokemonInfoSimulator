@@ -1,11 +1,17 @@
 
 
+interface PokeApiResponse {
+  name: string;
+  id: number;
+  types: { type: { name: string } }[];
+  stats: { base_stat: number; stat: { name: string } }[];
+}
 
 export interface Pokemon {
   name: string;
   id: number;
-  types: { type: { name: string } }[],
-  stats: { base_stat: number; stat: { name: string } }[]
+  types: string[],
+  stats: Stats;
 }
 
 export interface Stats {
@@ -25,6 +31,11 @@ export interface Move {
     category: "physical" | "special"
 }
 
+function getStat(stats: PokeApiResponse["stats"], name: string): number{
+    return stats.find(s => s.stat.name === name)?.base_stat ?? 0;
+}
+//deeper
+
 export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
     let data: Pokemon;
     try {
@@ -39,14 +50,14 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
     return {
         name: data.name,
         id: data.id,
+        types: data.types,
         stats: {
             hp: data.stats.hp,
             attack: data.stats.attack,
             defense: data.stats.defense,
             specialAttack: data.stats.specialAttack,
             specialDefense: data.stats.specialDefense,
-            speed: data.stats.speed,
-            types: data.stats.types
+            speed: data.stats.speed
         }
     }
 }
