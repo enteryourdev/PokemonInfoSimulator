@@ -33,7 +33,7 @@ export interface Move {
 }
 
 function getStat(stats: PokeApiResponse["stats"], name: string): number{
-    return stats.find(s => s.stat.name === name)?.base_stat ?? 0;
+    return stats.find(s => s.stat.name === name)?.base_stat ?? 0;// this finds the api response
 }
 //deeper
 
@@ -56,8 +56,8 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
             hp: getStat(raw.stats, "hp"),
             attack: getStat(raw.stats, "attack"),
             defense: getStat(raw.stats, "defense"),
-            specialAttack: getStat(raw.stats, "specialAttack"),
-            specialDefense: getStat(raw.stats, "specialDefense"),
+            specialAttack: getStat(raw.stats, "special-Attack"),
+            specialDefense: getStat(raw.stats, "special-Defense"),
             speed: getStat(raw.stats, "speed")
         }
     }
