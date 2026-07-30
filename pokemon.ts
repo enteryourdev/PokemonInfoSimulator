@@ -2,8 +2,27 @@
 
 
 export interface Pokemon {
-  name: string | number;
+  name: string;
   id: number;
+  types: { type: { name: string } }[],
+  stats: { base_stat: number; stat: { name: string } }[]
+}
+
+export interface Stats {
+    hp: number,
+    attack: number,
+    defense: number,
+    specialAttack: number,
+    specialDefense: number,
+    speed: number,
+    //moves: Move[]
+}
+
+export interface Move {
+    name: string,
+    power: number,
+    type: string,
+    category: "physical" | "special"
 }
 
 export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
@@ -19,6 +38,15 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
     }
     return {
         name: data.name,
-        id: data.id
+        id: data.id,
+        stats: {
+            hp: data.stats.hp,
+            attack: data.stats.attack,
+            defense: data.stats.defense,
+            specialAttack: data.stats.specialAttack,
+            specialDefense: data.stats.specialDefense,
+            speed: data.stats.speed,
+            types: data.stats.types
+        }
     }
 }
