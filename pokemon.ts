@@ -1,5 +1,6 @@
 
 
+
 interface PokeApiResponse {
   name: string;
   id: number;
@@ -37,27 +38,27 @@ function getStat(stats: PokeApiResponse["stats"], name: string): number{
 //deeper
 
 export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
-    let data: Pokemon;
+    let raw: PokeApiResponse;
     try {
         const response = (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`))
 
         if (!response.ok) return null;
-        data = await response.json() as Pokemon;
+        raw = await response.json() as PokeApiResponse;
     }catch (err){
         console.error(err);
         throw err;
     }
     return {
-        name: data.name,
-        id: data.id,
-        types: data.types,
+        name: raw.name,
+        id: raw.id,
+        types: raw.types.map(t => t.type.name),
         stats: {
-            hp: data.stats.hp,
-            attack: data.stats.attack,
-            defense: data.stats.defense,
-            specialAttack: data.stats.specialAttack,
-            specialDefense: data.stats.specialDefense,
-            speed: data.stats.speed
+            hp: getStat(raw.stats, "hp"),
+            attack: getStat(raw.stats, "attack"),
+            defense: getStat(raw.stats, "defense"),
+            specialAttack: getStat(raw.stats, "specialAttack"),
+            specialDefense: getStat(raw.stats, "specialDefense"),
+            speed: getStat(raw.stats, "speed")
         }
     }
 }
