@@ -2,11 +2,11 @@
 
 
 export interface Pokemon {
-  name: string;
+  name: string | number;
   id: number;
 }
 
-export async function fetchPokemon(name: string): Promise<Pokemon | null> {
+export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
     let data: Pokemon;
     try {
         const response = (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`))

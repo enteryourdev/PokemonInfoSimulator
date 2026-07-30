@@ -49,16 +49,12 @@ export interface PokemonStruct {
 
 app.get("/pokemon/random", async (req, res) => {
     try{
-        let rdm = [0, 0, 0]
-        for (let i = 0; i < rdm.length; i++){
+        const rdm: number[] = []
+        for (let i = 0; i < 3; i++){
         rdm.push(Math.floor(Math.random() * 1025) + 1);
         }
 
-        const team = await Promise.all([
-            fetchPokemon(rdm[0].toString()),
-            fetchPokemon(rdm[1].toString()),
-            fetchPokemon(rdm[2].toString())
-        ]);
+        const team = await Promise.all(rdm.map(id => fetchPokemon(id)));
 
         if (team.some(x => x === null)){
             return res.status(404).json({ error: "One or more pokemon not found, this probably impossible to reach"});
