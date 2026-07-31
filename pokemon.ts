@@ -8,6 +8,18 @@ interface PokeApiResponse {
   stats: { base_stat: number; stat: { name: string } }[];
 }
 
+interface MoveApiResponse {
+    name: string;
+    id: number;
+    type: { name: PokemonType };
+    damage_class: { name: "physical" | "special" | "status" };
+    power: number | null;
+    priority: number;
+    accuracy: number | null;
+    //effect_chance: number;
+
+}
+
 export interface Pokemon {
   name: string;
   id: number;
@@ -65,5 +77,5 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
 }
 
 export async function fetchMove(url: string): Promise<Move | null>{
-    
+
 }
