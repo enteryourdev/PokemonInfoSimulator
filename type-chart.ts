@@ -26,6 +26,6 @@ export const TYPE_CHART: Record<PokemonType, Matchups> = {
   fairy:    { fire: 0.5, fighting: 2, poison: 0.5, dragon: 2, dark: 2, steel: 0.5 }
 };
 
-function getEffectiveness(attacker: PokemonType, defender: PokemonType): number{
-    return TYPE_CHART[attacker][defender] ?? 1
+export function getEffectiveness(attacker: PokemonType, defender: PokemonType[]): number{
+    return defender.reduce((total, d) => total * (TYPE_CHART[attacker][d] ?? 1), 1);
 }
