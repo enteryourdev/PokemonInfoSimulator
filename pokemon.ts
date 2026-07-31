@@ -1,4 +1,4 @@
-
+import { PokemonType } from "./type-chart";
 
 
 interface PokeApiResponse {
@@ -27,10 +27,11 @@ export interface Stats {
 
 export interface Move {
     name: string,
-    power: number,
-    type: string,
-    category: "physical" | "special"
+    power: number | null, // null is for the buff type moves later on. Ship A first
+    type: PokemonType,
+    category: "physical" | "special" | "status";
 }
+const TACKLE: Move = { name: "tackle", type: "normal", power: 40, category: "physical" }; // default attack for fallback
 
 function getStat(stats: PokeApiResponse["stats"], name: string): number{
     return stats.find(s => s.stat.name === name)?.base_stat ?? 0;// this finds the api response
@@ -61,4 +62,8 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
             speed: getStat(raw.stats, "speed")
         }
     }
+}
+
+export async function fetchMove(url: string): Promise<Move | null>{
+    
 }
