@@ -50,6 +50,7 @@ function getStat(stats: PokeApiResponse["stats"], name: string): number{
 }
 //deeper
 
+
 export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
     let raw: PokeApiResponse;
     try {
@@ -76,6 +77,21 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
     }
 }
 
-export async function fetchMove(url: string): Promise<Move | null>{
+export async function fetchMove(name: string): Promise<Move | null>{
+    let raw: MoveApiResponse;
 
+    try{
+        const response = await fetch(`https://pokeapi.co/api/v2/move/${name}`)
+        if (!response.ok) return null;
+        raw = await response.json() as MoveApiResponse;
+    }catch (err){
+        console.error(err);
+        throw err;
+    }
+    return {
+        name: raw.name,
+        power: raw.power,
+        type: raw.type.name,
+        category: raw.damage_class.name
+    }
 }
