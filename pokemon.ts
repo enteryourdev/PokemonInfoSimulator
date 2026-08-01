@@ -16,6 +16,7 @@ interface MoveApiResponse {
     power: number | null;
     priority: number;
     accuracy: number | null;
+    moves: { move: { name: string } }[];
     //effect_chance: number;
 
 }
@@ -25,6 +26,7 @@ export interface Pokemon {
   id: number;
   types: string[],
   stats: Stats;
+  moves: Move[];
 }
 
 export interface Stats {
@@ -70,8 +72,8 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
             hp: getStat(raw.stats, "hp"),
             attack: getStat(raw.stats, "attack"),
             defense: getStat(raw.stats, "defense"),
-            specialAttack: getStat(raw.stats, "special-Attack"),
-            specialDefense: getStat(raw.stats, "special-Defense"),
+            specialAttack: getStat(raw.stats, "special-attack"),
+            specialDefense: getStat(raw.stats, "special-defense"),
             speed: getStat(raw.stats, "speed")
         }
     }
