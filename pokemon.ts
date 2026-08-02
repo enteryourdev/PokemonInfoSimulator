@@ -26,7 +26,7 @@ export interface Pokemon {
   id: number;
   types: PokemonType[],
   stats: Stats;
-  moves: Move[];
+  moves: string[];
 }
 
 export interface Stats {
@@ -51,6 +51,7 @@ function getStat(stats: PokeApiResponse["stats"], name: string): number{
     return stats.find(s => s.stat.name === name)?.base_stat ?? 0;// this finds the api response
 }
 //deeper
+
 function getMoves(raw: PokeApiResponse): string[]{
     const fullMoves: string[] = [];
 
@@ -63,24 +64,18 @@ function getMoves(raw: PokeApiResponse): string[]{
 
 
 export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
-    let raw: PokeApiResponse;
     try {
         const response = (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`))
 
         if (!response.ok) return null;
-        raw = await response.json() as PokeApiResponse;
+        const raw = await response.json() as PokeApiResponse;
 
-        getMoves(raw);
-
-    }catch (err){
-        console.error(err);
-        throw err;
-    }
+        const moveNames = getMoves(raw);
     return {
         name: raw.name,
         id: raw.id,
         types: raw.types.map(t => t.type.name as PokemonType),
-        moves,
+        moves: moveNames, 
         stats: {
             hp: getStat(raw.stats, "hp"),
             attack: getStat(raw.stats, "attack"),
@@ -88,7 +83,11 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
             specialAttack: getStat(raw.stats, "special-attack"),
             specialDefense: getStat(raw.stats, "special-defense"),
             speed: getStat(raw.stats, "speed"),
-        }
+            }
+        }    
+    }catch (err){
+        console.error(err);
+        throw err;
     }
 }
 
