@@ -26,7 +26,7 @@ export interface Pokemon {
   id: number;
   types: PokemonType[],
   stats: Stats;
-  moves: string[];
+  moves: Move[];
 }
 
 export interface Stats {
@@ -88,11 +88,13 @@ export async function fetchPokemon(name: string | number): Promise<Pokemon | nul
         const raw = await response.json() as PokeApiResponse;
 
         const moveNames = getMoves(raw);
+        const moves = await fetchMoves(moveNames);
+
     return {
         name: raw.name,
         id: raw.id,
         types: raw.types.map(t => t.type.name as PokemonType),
-        moves: moveNames, 
+        moves: moves, // gets a little confusing.
         stats: {
             hp: getStat(raw.stats, "hp"),
             attack: getStat(raw.stats, "attack"),
