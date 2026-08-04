@@ -62,6 +62,9 @@ function getMoves(raw: PokeApiResponse): string[]{
     return fullMoves;
 }
 
+async function fetchMoves(name: string[]): Promise(<Move | null)[]>{
+    names.filter(x => x !== null).map(x => )
+}
 
 export async function fetchPokemon(name: string | number): Promise<Pokemon | null> {
     try {
