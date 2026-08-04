@@ -65,7 +65,7 @@ function getMoves(raw: PokeApiResponse): string[]{
 async function fetchMoves(name: string[]): Promise<Move[]>{
     try{
         const moveToData = await Promise.all(name.map(x => fetchMove(x)));
-        const filteredData = moveToData.filter((x): x is Move => x !== null && x.category !== "status").slice(0, 4);
+        const filteredData = moveToData.filter((x): x is Move => x !== null && x.category !== "status" && x.power !== null).slice(0, 4);
         //(x): x is Move is type guard. typescript couldnt prove that it cant be null.
         while (filteredData.length < 4){
             filteredData.push(TACKLE);
@@ -128,7 +128,3 @@ export async function fetchMove(name: string): Promise<Move | null>{
         category: raw.damage_class.name
     }
 }
-const blah: string = "blah"
-const bleh: string[] = ["blah", "bleh"]
-
-bleh.map(x => fetchMove(x))
