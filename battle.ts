@@ -5,6 +5,13 @@ interface Fighter {
     pokemon: Pokemon;
     currentHp: number;
 }
+export interface TurnResult {
+    attacker: string;
+    move: string;
+    damage: number;
+    effectiveness: number;
+    defenderHpAfter: number;
+}
 
 const MAX_TURNS = 100;
 
@@ -27,9 +34,17 @@ export function calculateDamage(attacker: Pokemon, defender: Pokemon, move: Move
     return Math.round(power * (atk/def) * getEffectiveness(move.type, defender.types));
 }
 
-export function takeTurn(attacker: Fighter, defender: Fighter): void {
+export function takeTurn(attacker: Fighter, defender: Fighter): TurnResult {
     const rdm = Math.floor(Math.random() * attacker.pokemon.moves.length);
     const randomMove = attacker.pokemon.moves[rdm];
     const damage = calculateDamage(attacker.pokemon, defender.pokemon, randomMove)
     defender.currentHp = Math.max(0, defender.currentHp - damage);
+
+    return {
+        attacker: attacker.pokemon.name,
+        move: randomMove.name,
+        damage: damage,
+        effectiveness: getEffectiveness(randomMove.type, defender.pokemon.types),
+        defenderHpAfter: defender.currentHp
+    };
 }
