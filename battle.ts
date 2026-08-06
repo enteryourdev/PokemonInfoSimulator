@@ -12,6 +12,10 @@ export interface TurnResult {
     effectiveness: number;
     defenderHpAfter: number;
 }
+export interface BattleResult {
+    winner: string,
+    turns: number
+}
 
 const MAX_TURNS = 100;
 
@@ -47,4 +51,22 @@ export function takeTurn(attacker: Fighter, defender: Fighter): TurnResult {
         effectiveness: getEffectiveness(randomMove.type, defender.pokemon.types),
         defenderHpAfter: defender.currentHp
     };
+}
+
+export function runBattle(a: Pokemon, b: Pokemon): BattleResult{
+    const fighterA =  { pokemon: a, currentHp: a.stats.hp };
+    const fighterB = { pokemon: b, currentHp: b.stats.hp };
+    let turn = 0;
+
+    while (fighterA.currentHp > 0 && fighterB.currentHp > 0 &&  turn < MAX_TURNS){
+        takeTurn(fighterA, fighterB);
+        if (fighterB.currentHp <= 0) break;
+        takeTurn(fighterB, fighterA);
+        turn++
+    }
+
+    return {
+        winner:fighterA.currentHp > 0 ? a.name : b.name,
+        turns: turn
+    }
 }
