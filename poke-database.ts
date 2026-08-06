@@ -1,5 +1,6 @@
 import express from "express";
 import { fetchPokemon, Pokemon } from "./pokemon";
+import { runBattle } from "./battle";
 
 const app = express();
 const PORT = 3000; //listen port
@@ -105,6 +106,14 @@ app.get("/team", async (req, res) => {
 
 app.get("/battle/:a/vs/:b", async (req, res) => {
     try{
+        const battle = await Promise.all([
+            fetchPokemon(req.params.a),
+            fetchPokemon(req.params.b)
+        ])
+        runBattle(battle[0]!, battle[1]!);
+        if (battle.some(x => x === null)){
+            return res.status(404).json({ error: "One or more pokemon not found"});
+        }
 
     }catch (err){
         console.error(err);
