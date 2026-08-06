@@ -102,3 +102,12 @@ app.get("/team", async (req, res) => {
         return res.status(502).json({ error: " unavailable service. "})
     }
 })
+
+app.get("/battle/:a/vs/:b", async (req, res) => {
+    try{
+
+    }catch (err){
+        console.error(err);
+        return res.status(502).json({ error: " unavailable service "})
+    }
+});

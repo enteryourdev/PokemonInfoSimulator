@@ -60,6 +60,7 @@ export function runBattle(a: Pokemon, b: Pokemon): BattleResult{
 
     while (fighterA.currentHp > 0 && fighterB.currentHp > 0 &&  turn < MAX_TURNS){
         takeTurn(fighterA, fighterB);
+        turn++
         if (fighterB.currentHp <= 0) break;
         takeTurn(fighterB, fighterA);
         turn++
