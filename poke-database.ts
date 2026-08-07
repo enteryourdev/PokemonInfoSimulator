@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchPokemon, Pokemon } from "./pokemon";
+import { fetchPokemon, Pokemon, getPokemon } from "./pokemon";
 import { runBattle } from "./battle";
 
 const app = express();
@@ -106,8 +106,8 @@ app.get("/team", async (req, res) => {
 
 app.get("/battle/:a/vs/:b", async (req, res) => {
     try{
-        const [a, b] = await Promise.all([
-            fetchPokemon(req.params.a),
+        const [a, b] = await Promise.all([ // change back to fetchPokemon(req.params.a)
+            getPokemon(req.params.a), 
             fetchPokemon(req.params.b)
         ])
         

@@ -1,5 +1,5 @@
 import { PokemonType } from "./type-chart";
-
+import { CUSTOM_POKEMON } from "./custom"
 
 interface PokeApiResponse {
   name: string;
@@ -45,7 +45,14 @@ export interface Move {
     type: PokemonType,
     category: "physical" | "special" | "status";
 }
+
 const TACKLE: Move = { name: "tackle", type: "normal", power: 40, category: "physical" }; // default attack for fallback
+const CUSTOMS: Record<string, Pokemon> = {
+    justin: CUSTOM_POKEMON
+}
+export async function getPokemon(name: string): Promise<Pokemon | null> {
+  return CUSTOMS[name.toLowerCase()] ?? await fetchPokemon(name);
+}
 
 function getStat(stats: PokeApiResponse["stats"], name: string): number{
     return stats.find(s => s.stat.name === name)?.base_stat ?? 0;// this finds the api response
