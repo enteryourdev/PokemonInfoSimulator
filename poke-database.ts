@@ -106,15 +106,16 @@ app.get("/team", async (req, res) => {
 
 app.get("/battle/:a/vs/:b", async (req, res) => {
     try{
-        const battle = await Promise.all([
+        const [a, b] = await Promise.all([
             fetchPokemon(req.params.a),
             fetchPokemon(req.params.b)
         ])
-        runBattle(battle[0]!, battle[1]!);
-        if (battle.some(x => x === null)){
+        
+        if (a === null || b === null){
             return res.status(404).json({ error: "One or more pokemon not found"});
         }
-
+        const result = runBattle(a, b);
+        res.json(result);
     }catch (err){
         console.error(err);
         return res.status(502).json({ error: " unavailable service "})
