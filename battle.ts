@@ -14,7 +14,8 @@ export interface TurnResult {
 }
 export interface BattleResult {
     winner: string,
-    turns: number
+    turns: number,
+    log: TurnResult[]
 }
 
 const MAX_TURNS = 100;
@@ -35,7 +36,7 @@ export function calculateDamage(attacker: Pokemon, defender: Pokemon, move: Move
         case "status":
             return 0;
     }
-    return Math.round(power * (atk/def) * getEffectiveness(move.type, defender.types));
+    return Math.max(1, Math.round(power * (atk/def) / 8 * getEffectiveness(move.type, defender.types))); // changed to make the fight last longer.
 }
 
 export function takeTurn(attacker: Fighter, defender: Fighter): TurnResult {
@@ -57,17 +58,19 @@ export function runBattle(a: Pokemon, b: Pokemon): BattleResult{
     const fighterA =  { pokemon: a, currentHp: a.stats.hp };
     const fighterB = { pokemon: b, currentHp: b.stats.hp };
     let turn = 0;
+    const log: TurnResult[] = [];
 
     while (fighterA.currentHp > 0 && fighterB.currentHp > 0 &&  turn < MAX_TURNS){
-        takeTurn(fighterA, fighterB);
+        log.push(takeTurn(fighterA, fighterB));
         turn++
         if (fighterB.currentHp <= 0) break;
-        takeTurn(fighterB, fighterA);
+        log.push(takeTurn(fighterB, fighterA));
         turn++
     }
 
     return {
         winner:fighterA.currentHp > 0 ? a.name : b.name,
-        turns: turn
+        turns: turn,
+        log: log
     }
 }
