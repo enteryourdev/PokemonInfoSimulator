@@ -48,8 +48,10 @@ export interface PokemonStruct {
     }
 })*/
 
-app.get("/pokemon/random", async (req, res) => {
+app.get("/pokemon/random{/:mode}", async (req, res) => {
     try{
+        const mode = req.params.mode ?? "normal";
+
         const rdm: number[] = []
         for (let i = 0; i < 3; i++){
         rdm.push(Math.floor(Math.random() * 1025) + 1);
@@ -104,7 +106,9 @@ app.get("/team", async (req, res) => {
     }
 })
 
-app.get("/battle/:a/vs/:b", async (req, res) => {
+app.get("/battle/:a/vs/:b{/:mode}", async (req, res) => {
+    const moode = req.params.mode ?? "normal";
+
     try{
         const [a, b] = await Promise.all([ // change back to fetchPokemon(req.params.a)
             getPokemon(req.params.a), 
