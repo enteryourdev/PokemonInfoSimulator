@@ -51,10 +51,30 @@ export interface PokemonStruct {
 app.get("/pokemon/random{/:mode}", async (req, res) => {
     try{
         const mode = req.params.mode ?? "normal";
-
+        let minMax: number[]
+        switch (mode){
+            case "gen_1":
+                minMax = [1, 151];
+                break;
+            case "gen_2":
+                minMax = [152, 251];
+                break;
+            case "gen_3":
+                minMax = [252, 386];
+                break;
+            case "gen_4":
+                minMax = [387, 493];
+                break;
+            case "gen_ultimate":
+                minMax = [1, 493];
+                break;
+            case "normal":
+                default:
+                minMax = [1, 1025];
+        }
         const rdm: number[] = []
         for (let i = 0; i < 3; i++){
-        rdm.push(Math.floor(Math.random() * 1025) + 1);
+        rdm.push(Math.floor(Math.random() * (minMax[1] - minMax[0] + 1)) + minMax[0]);
         }
 
         const team = await Promise.all(rdm.map(id => fetchPokemon(id)));
@@ -69,8 +89,6 @@ app.get("/pokemon/random{/:mode}", async (req, res) => {
     }
     
 } )
-
-
 
 app.get("/pokemon/:name", async (req, res) => {
     try {
