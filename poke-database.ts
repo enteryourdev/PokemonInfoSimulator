@@ -1,6 +1,7 @@
 import express from "express";
 import { fetchPokemon, Pokemon, getPokemon } from "./pokemon";
 import { runBattle } from "./battle";
+import { runTeamBattle } from "./battle";
 
 const app = express();
 const PORT = 3000; //listen port
@@ -82,13 +83,60 @@ app.get("/pokemon/random{/:mode}", async (req, res) => {
         if (team.some(x => x === null)){
             return res.status(404).json({ error: "One or more pokemon not found, this probably impossible to reach"});
         }
+
         return res.json(team); 
     }catch (err){
         console.error(err);
         return res.status(502).json({error: " unvailable service. "});
     }
-    
 } )
+
+app.get("/pokemon/randombattle{/:mode}", async (req, res) => {
+    try{
+        const mode = req.params.mode ?? "normal";
+        let minMax: number[]
+        switch (mode){
+            case "gen_1":
+                minMax = [1, 151];
+                break;
+            case "gen_2":
+                minMax = [152, 251];
+                break;
+            case "gen_3":
+                minMax = [252, 386];
+                break;
+            case "gen_4":
+                minMax = [387, 493];
+                break;
+            case "gen_ultimate":
+                minMax = [1, 493];
+                break;
+            case "normal":
+                default:
+                minMax = [1, 1025];
+        }
+        const teamA: number[] = []
+        const teamB: number[] = []
+        for (let i = 0; i < 3; i++){
+        teamA.push(Math.floor(Math.random() * (minMax[1] - minMax[0] + 1)) + minMax[0]);
+        teamB.push(Math.floor(Math.random() * (minMax[1] - minMax[0] + 1)) + minMax[0]);
+        }
+
+
+        const team = await Promise.all([...teamA, ...teamB].map(id => fetchPokemon(id)));
+
+        if (team.some(x => x === null)){
+            return res.status(404).json({ error: "One or more pokemon not found, this probably impossible to reach"});
+        }
+
+        const result = runTeamBattle(team[0]!, team[3]!); // ! is non-null assertion operator. tells typescript that this is not null.
+        return res.json(team); 
+    }catch (err){
+        console.error(err);
+        return res.status(502).json({error: " unvailable service. "});
+    }
+} )
+
 
 app.get("/pokemon/:name", async (req, res) => {
     try {
