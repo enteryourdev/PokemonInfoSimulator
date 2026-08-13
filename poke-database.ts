@@ -1,7 +1,7 @@
 import express from "express";
 import { fetchPokemon, Pokemon, getPokemon } from "./pokemon";
 import { runBattle } from "./battle";
-import { runTeamBattle } from "./battle";
+import { runMultiBattle } from "./battle";
 
 const app = express();
 const PORT = 3000; //listen port
@@ -123,14 +123,15 @@ app.get("/pokemon/randombattle{/:mode}", async (req, res) => {
         }
 
 
-        const team = await Promise.all([...teamA, ...teamB].map(id => fetchPokemon(id)));
+        const [a,b] = await Promise.all([
+            Promise.all(teamA.map(id => fetchPokemon(id))),  Promise.all(teamB.map(id => fetchPokemon(id)))]);
 
-        if (team.some(x => x === null)){
+        if (!a.every(x => x !== null) || !b.every(x => x !== null)){
             return res.status(404).json({ error: "One or more pokemon not found, this probably impossible to reach"});
         }
 
-        const result = runTeamBattle(team[0]!, team[3]!); // ! is non-null assertion operator. tells typescript that this is not null.
-        return res.json(team); 
+        const result = runMultiBattle(a, b);
+        return res.json(result); 
     }catch (err){
         console.error(err);
         return res.status(502).json({error: " unvailable service. "});
