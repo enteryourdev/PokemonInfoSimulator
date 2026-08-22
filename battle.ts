@@ -83,12 +83,16 @@ export function runMultiBattle(a: Pokemon[], b: Pokemon[]): BattleResult{
 
     while (fightersA.some(f => f.currentHp > 0) && fightersB.some(f => f.currentHp > 0) && turn < MAX_TURNS){
         const fighterA = fightersA.find(f => f.currentHp > 0);
-        takeTurn(fighterA!, fightersB.find(f => f.currentHp > 0)!);
+        const defenderA = fightersB.find(f => f.currentHp > 0);
+        if (!fighterA || !defenderA) break;
+        takeTurn(fighterA, defenderA);
         turn++;
+        
         const fighterB = fightersB.find(f => f.currentHp > 0);
-        takeTurn(fighterB!, fightersA.find(f => f.currentHp > 0)!);
+        const defenderB = fightersA.find(f => f.currentHp > 0);
+        if (!fighterB || !defenderB) break;
+        takeTurn(fighterB, defenderB);
         turn++;
-        if (!fighterA || !fighterB) break;
     }
 
     return {
