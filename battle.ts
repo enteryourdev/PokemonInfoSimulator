@@ -80,25 +80,26 @@ export function runMultiBattle(a: Pokemon[], b: Pokemon[]): BattleResult{
     const fightersB = b.map(p => ({ pokemon: p, currentHp: p.stats.hp }));
     let turn = 0;
     const results: BattleResult[] = [];
+    const log: TurnResult[] = [];
 
     while (fightersA.some(f => f.currentHp > 0) && fightersB.some(f => f.currentHp > 0) && turn < MAX_TURNS){
         const fighterA = fightersA.find(f => f.currentHp > 0);
         const defenderA = fightersB.find(f => f.currentHp > 0);
         if (!fighterA || !defenderA) break;
-        takeTurn(fighterA, defenderA);
+        log.push(takeTurn(fighterA, defenderA));
         turn++;
-        
+
         const fighterB = fightersB.find(f => f.currentHp > 0);
         const defenderB = fightersA.find(f => f.currentHp > 0);
         if (!fighterB || !defenderB) break;
-        takeTurn(fighterB, defenderB);
+        log.push(takeTurn(fighterB, defenderB));
         turn++;
     }
 
     return {
         winner: fightersA.some(f => f.currentHp > 0) ? "Team A" : "Team B",
         turns: turn,
-        log: [] 
+        log: log
     }
 
 
