@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Pokemon {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  hp        Int
+  attack    Int
+  defense   Int
+  spAtk     Int
+  spDef     Int
+  speed     Int
+  types     String[]
+  createdAt DateTime @default(now())
+}
+
+model Battle {
+  id         Int      @id @default(autoincrement())
+  pokemon1   String
+  pokemon2   String
+  winner     String?
+  turnCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  turns      Turn[]
+}
+
+model Turn {
+  id         Int      @id @default(autoincrement())
+  battleId   Int
+  turnNumber Int
+  attacker   String
+  move       String
+  damage     Int
+  hpAfter    Int
+  battle     Battle   @relation(fields: [battleId], references: [id])
+}
